@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+   		id="reportJSONFormatsPlugin"
+         point="com.dynatrace.diagnostics.InstallerContent">
+      <metainfo
+            installer_type="resourcepack"
+            name="com.dynatrace.diagnostics.report.json.plugin.metainfo">
+         <resource
+               resource="com.dynatrace.diagnostics.report.json.jar"
+               resource_type="systemPlugin"> <!-- needs to be systemPlugin to install on client and server -->
+         </resource>
+      </metainfo>
+   </extension>
+
+</plugin>

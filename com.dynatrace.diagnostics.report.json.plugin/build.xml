@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="JSON Reporting Library Plugin" default="all">
+	<description>
+		Plugin for the report renderer which produces JSON report format.
+	</description>
+	
+	<property name="bundle.symbolic.name" value="com.dynatrace.diagnostics.report.json.plugin" />
+	
+	<property name="dir.root" value="../../trunk/jloadtrace" />
+	<property file="${dir.root}/version.properties" />
+	<property name="build.pathpostfix" value="-${version.major}.${version.minor}" />
+	<property name="version" value="${version.major}.${version.minor}.${version.revision}.${version.buildnumber}" />
+	
+	<property file="../ant.properties" />
+	<property file="../../trunk/ant.properties" />
+	<property file="ant.properties" />
+	<property file="${user.home}/ant.properties" />
+		
+	<property file="built.properties"/>
+	
+	<condition property="bundle.properties.filename" value="bundles.${target.platform}.properties"
+			else="bundles.properties">
+		<isset property="target.platform" />
+	</condition>
+	<!-- "target.platform" property defined in "ant.properties" would take precedence: -->
+	<property name="target.platform" value="."/>
+	<property file="${dir.root}/${bundle.properties.filename}" />
+    
+	<property name="dir.plugin.dist" location="dist" />
+	
+	<property name="lib.bundle" location="${dir.plugin.dist}/${bundle.symbolic.name}.dtp" />
+	
+    <!-- ================================= 
+          target: buildLibrary              
+         ================================= -->
+	
+	<target name="all" depends="init, link" unless="built" description="Diagnostics Agent">
+		<echo>Done</echo>
+	</target>
+	
+	<!-- - - - - - - - - - - - - - - - - - 
+	          target: init                      
+	         - - - - - - - - - - - - - - - - - -->
+	<target name="init" depends="" unless="built">
+		<mkdir dir="${dir.plugin.dist}" />
+	</target>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: link                      
+         - - - - - - - - - - - - - - - - - -->
+	<target name="link" depends="init">
+		<!-- ensure that the jar-file is built and put in place -->
+		<ant dir="../com.dynatrace.diagnostics.report.json" inheritAll="false" />
+
+		<mkdir dir="${dir.plugin.dist}"/>
+		<delete failonerror="no">
+			<fileset dir="${dir.plugin.dist}" includes="${bundle.symbolic.name}*.dtp"/>
+		</delete>
+		
+    	<ant dir="${dir.root}/../non-prod/qa.util/qa.util.ant.manifest" antfile="ManifestAnt.xml" inheritall="false"
+    		    target="regenerateAndPotentiallyCommitManifest">
+    		<property name="manifestFile" location="META-INF/MANIFEST.MF" />
+    		<property name="buildserver" value="${buildserver}" />
+    	</ant>
+
+		<echo message="Writing bundle to ${lib.bundle}"/>
+		<jar jarfile="${lib.bundle}" manifest="META-INF/MANIFEST.MF">
+			<fileset dir=".">
+				<include name="plugin.xml"/>
+				<include name="plugin.properties"/>
+				<include name="*.jar" />
+			</fileset>
+		</jar>
+		
+		<echo file="built.properties" append="false">built</echo>
+	</target>
+	
+	<!-- - - - - - - - - - - - - - - - - - 
+	          target: clean                      
+	         - - - - - - - - - - - - - - - - - -->
+    <target name="clean" depends="clearBuiltProperty" description="clean up">
+    	<delete dir="${dir.plugin.dist}" failonerror="no" />
+		<ant dir="../com.dynatrace.diagnostics.report.json" inheritAll="false" target="clean"/>
+	</target> 
+	
+	<!-- - - - - - - - - - - - - - - - - - 
+	          target: clearBuiltProperty                      
+	         - - - - - - - - - - - - - - - - - -->	
+    <target name="clearBuiltProperty" description="update without build">
+    	<delete file="built.properties"/>
+	</target>
+</project>

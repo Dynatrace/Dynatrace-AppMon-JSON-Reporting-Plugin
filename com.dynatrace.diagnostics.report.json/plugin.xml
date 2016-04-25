@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+   		id="reportJSONFormats"
+         point="com.dynatrace.diagnostics.report.format">
+      
+      <!-- main JSON Report Renderer which uses Jersey JSON code -->
+      <format
+            description="Reporter which produces JSON format, a lightweight text-based open standard designed for human-readable data interchange. The Reporter is based on the standard XML report and converts the content into JSON on the fly."
+            id="com.dynatrace.diagnostics.report.other.format.jsonxmlstream.badgerfish"
+            name="JSON-Badgerfish"
+            type="JSON"
+            renderer="com.dynatrace.diagnostics.report.json.JSONReportRenderer"
+            hidden="true"
+			default="false"
+			pageOriented="false"
+			icon="report/report_50.png">
+
+			<!-- controls how the output is formatted, 
+				allowed values are "natural", "badgerfish", "mapped" and "mappedJettison", 
+				see Jersey documentation for details -->
+			<parameter key="mode" value="badgerfish"/>
+      </format>
+
+      <format
+            description="Reporter which produces JSON format, a lightweight text-based open standard designed for human-readable data interchange. The Reporter is based on the standard XML report and converts the content into JSON on the fly."
+            id="com.dynatrace.diagnostics.report.other.format.jsonxmlstream"
+            name="JSON"
+            type="JSON"
+            renderer="com.dynatrace.diagnostics.report.json.JSONReportRenderer"
+            hidden="false"
+			default="true"
+			pageOriented="false"
+			icon="report/report_50.png">
+
+			<!-- controls how the output is formatted, 
+				allowed values are "natural", "badgerfish", "mapped" and "mappedJettison", 
+				see Jersey documentation for details -->
+			<parameter key="mode" value="natural"/>
+      </format>
+
+      <format
+            description="Reporter which produces JSON format, a lightweight text-based open standard designed for human-readable data interchange. The Reporter is based on the standard XML report and converts the content into JSON on the fly."
+            id="com.dynatrace.diagnostics.report.other.format.jsonxmlstream.mapped"
+            name="JSON-Mapped"
+            type="JSON"
+            renderer="com.dynatrace.diagnostics.report.json.JSONReportRenderer"
+            hidden="true"
+			default="false"
+			pageOriented="false"
+			icon="report/report_50.png">
+
+			<!-- controls how the output is formatted, 
+				allowed values are "natural", "badgerfish", "mapped" and "mappedJettison", 
+				see Jersey documentation for details -->
+			<parameter key="mode" value="mapped"/>
+      </format>
+
+      <format
+            description="Reporter which produces JSON format, a lightweight text-based open standard designed for human-readable data interchange. The Reporter is based on the standard XML report and converts the content into JSON on the fly."
+            id="com.dynatrace.diagnostics.report.other.format.jsonxmlstream.mappedjettison"
+            name="JSON-MappedJettison"
+            type="JSON"
+            renderer="com.dynatrace.diagnostics.report.json.JSONReportRenderer"
+            hidden="true"
+			default="false"
+			pageOriented="false"
+			icon="report/report_50.png">
+
+			<!-- controls how the output is formatted, 
+				allowed values are "natural", "badgerfish", "mapped" and "mappedJettison", 
+				see Jersey documentation for details -->
+			<parameter key="mode" value="mappedJettison"/>
+      </format>
+
+      <!-- Reporting example that converts the XML to JSON before it is written to the file --> 
+      <format
+            description="Reporter which produces JSON format, a lightweight text-based open standard designed for human-readable data interchange. This renderer internally builds the complete XML in memory which is then converted into JSON by using code from http://json-lib.sourceforge.net/, so this is not safe to use for large reports!"
+            id="com.dynatrace.diagnostics.report.other.format.json"
+            name="JSON from XML"
+            type="JSON"
+            renderer="com.dynatrace.diagnostics.report.json.JSONFromXMLReportRenderer"
+            hidden="true"
+			default="false"
+			pageOriented="false"
+			icon="report/report_50.png">
+
+			<!-- controls if reporter produces human readable content or if more condensed output is generated -->
+			<parameter key="prettyprint" value="true"/>
+      </format>
+
+   </extension>
+
+  <extension
+        id="desc"
+        name="desc"
+        point="com.dynatrace.diagnostics.PluginDescription">
+     <metainfo
+           hotpluggable="true"
+           pluginname="com.dynatrace.diagnostics.report.json.plugin"
+           plugintype="Plugin">
+        <description
+              author="DoSt"
+              descriptive_text="JSON reporting formats."
+              license_file="dynaTraceBSD.txt"
+              provider="dynaTrace Software GmbH"
+              support_level="unsupported">
+        </description>
+        <bundle
+              bundle_name="com.dynatrace.diagnostics.report.json"
+              description="JSON reporting formats.">
+           <instance
+                 instance="client">
+           </instance>
+           <instance
+                 instance="server">
+           </instance>
+        </bundle>
+         <min_required_product_version
+               major="3"
+               minor="5">
+         </min_required_product_version>
+     </metainfo>
+  </extension>
+</plugin>
