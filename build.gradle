@@ -68,8 +68,10 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-databind:2.6.3'*/
 
     compile fileTree(dir: "lib", include: [
+            'com.dynatrace.diagnostics.server.shared.jar',
             'com.dynatrace.diagnostics.sdk.jar',
             'com.dynatrace.diagnostics.util.jar',
+            'com.dynatrace.diagnostics.report.excel.jar'
     ])
 
     testCompile fileTree(dir: "lib", include: [

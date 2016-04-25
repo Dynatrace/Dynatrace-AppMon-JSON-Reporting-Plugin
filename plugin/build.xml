@@ -5,88 +5,64 @@
 	</description>
 	
 	<property name="bundle.symbolic.name" value="com.dynatrace.diagnostics.report.json.plugin" />
-	
-	<property name="dir.root" value="../../trunk/jloadtrace" />
-	<property file="${dir.root}/version.properties" />
-	<property name="build.pathpostfix" value="-${version.major}.${version.minor}" />
-	<property name="version" value="${version.major}.${version.minor}.${version.revision}.${version.buildnumber}" />
-	
-	<property file="../ant.properties" />
-	<property file="../../trunk/ant.properties" />
-	<property file="ant.properties" />
-	<property file="${user.home}/ant.properties" />
-		
-	<property file="built.properties"/>
-	
-	<condition property="bundle.properties.filename" value="bundles.${target.platform}.properties"
-			else="bundles.properties">
-		<isset property="target.platform" />
-	</condition>
-	<!-- "target.platform" property defined in "ant.properties" would take precedence: -->
-	<property name="target.platform" value="."/>
-	<property file="${dir.root}/${bundle.properties.filename}" />
-    
-	<property name="dir.plugin.dist" location="dist" />
-	
-	<property name="lib.bundle" location="${dir.plugin.dist}/${bundle.symbolic.name}.dtp" />
-	
+	<property name="dir.dist" location="dist" />
+
     <!-- ================================= 
-          target: buildLibrary              
+          target: all
          ================================= -->
-	
-	<target name="all" depends="init, link" unless="built" description="Diagnostics Agent">
+	<target name="all" depends="init, link" unless="built" description="JSON Reporting Plugin">
 		<echo>Done</echo>
 	</target>
 	
 	<!-- - - - - - - - - - - - - - - - - - 
 	          target: init                      
 	         - - - - - - - - - - - - - - - - - -->
-	<target name="init" depends="" unless="built">
-		<mkdir dir="${dir.plugin.dist}" />
+	<target name="init" unless="built">
+		<mkdir dir="${dir.dist}" />
 	</target>
 
-    <!-- - - - - - - - - - - - - - - - - - 
-          target: link                      
-         - - - - - - - - - - - - - - - - - -->
-	<target name="link" depends="init">
-		<!-- ensure that the jar-file is built and put in place -->
-		<ant dir="../com.dynatrace.diagnostics.report.json" inheritAll="false" />
-
-		<mkdir dir="${dir.plugin.dist}"/>
-		<delete failonerror="no">
-			<fileset dir="${dir.plugin.dist}" includes="${bundle.symbolic.name}*.dtp"/>
-		</delete>
-		
-    	<ant dir="${dir.root}/../non-prod/qa.util/qa.util.ant.manifest" antfile="ManifestAnt.xml" inheritall="false"
-    		    target="regenerateAndPotentiallyCommitManifest">
-    		<property name="manifestFile" location="META-INF/MANIFEST.MF" />
-    		<property name="buildserver" value="${buildserver}" />
-    	</ant>
-
-		<echo message="Writing bundle to ${lib.bundle}"/>
-		<jar jarfile="${lib.bundle}" manifest="META-INF/MANIFEST.MF">
-			<fileset dir=".">
-				<include name="plugin.xml"/>
-				<include name="plugin.properties"/>
-				<include name="*.jar" />
-			</fileset>
-		</jar>
-		
-		<echo file="built.properties" append="false">built</echo>
-	</target>
-	
 	<!-- - - - - - - - - - - - - - - - - - 
 	          target: clean                      
 	         - - - - - - - - - - - - - - - - - -->
-    <target name="clean" depends="clearBuiltProperty" description="clean up">
-    	<delete dir="${dir.plugin.dist}" failonerror="no" />
-		<ant dir="../com.dynatrace.diagnostics.report.json" inheritAll="false" target="clean"/>
-	</target> 
-	
+	<target name="clean" depends="" description="clean up">
+		<delete dir="build" />
+		<delete dir="${dir.dist}"/>
+	</target>
+
 	<!-- - - - - - - - - - - - - - - - - - 
-	          target: clearBuiltProperty                      
-	         - - - - - - - - - - - - - - - - - -->	
-    <target name="clearBuiltProperty" description="update without build">
-    	<delete file="built.properties"/>
+          target: link                      
+         - - - - - - - - - - - - - - - - - -->
+	<target name="link" depends="init">
+		<echo message="Build dtp file for JSON Reporting Plugin at ${dir.dist}/${bundle.symbolic.name}_${version}.dtp"/>
+
+		<!-- trigger a rebuild every time -->
+		<delete failonerror="no">
+			<fileset dir="${dir.dist}" includes="${bundle.symbolic.name}*.dtp" />
+		</delete>
+		<!-- ensure that all the documents are at least well-formed, i.e. nobody made illegal manual changes -->
+		<xmlvalidate lenient="true">
+			<!--fileset dir=".">
+				<include name="dashboards/*.xml"/>
+				<include name="profiles/*.xml"/>
+				<include name="sensors/**/*.xml"/>
+				<include name="sessions/**/*.xml"/>
+				<include name="plugin.xml"/>
+			</fileset-->
+			<fileset dir="..">
+				<include name="plugin.xml"/>
+			</fileset>
+		</xmlvalidate>
+		
+		<jar jarfile="${dir.dist}/${bundle.symbolic.name}_${version}.dtp" manifest="META-INF/MANIFEST.MF">
+			<fileset dir=".">
+				<include name="plugin.xml" />
+				<include name="plugin.properties" />
+				<!--include name="sensors/**"/>
+				<include name="sessions/**"/>
+				<include name="plugin/**"/>
+				<include name="dashboards/**" />
+				<include name="profiles/**" /-->
+			</fileset>
+		</jar>
 	</target>
 </project>
