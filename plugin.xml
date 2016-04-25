@@ -103,8 +103,8 @@
         <description
               author="DoSt"
               descriptive_text="JSON reporting formats."
-              license_file="dynaTraceBSD.txt"
-              provider="dynaTrace Software GmbH"
+              license_file="DynatraceBSD.txt"
+              provider="Dynatrace LLC"
               support_level="unsupported">
         </description>
         <bundle
