@@ -1,4 +1,3 @@
-apply from: 'common.gradle'
 //apply plugin: 'maven-publish'
 apply plugin: 'eclipse'
 //apply plugin: 'idea'

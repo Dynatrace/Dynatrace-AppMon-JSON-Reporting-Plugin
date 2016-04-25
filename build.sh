@@ -9,7 +9,5 @@ export VERSION=5.5.0.1105
 
 java -version
 
-#./gradlew -PdynaTraceVersion=$VERSION check plugin
-ant clean && ant
-
+./gradlew -PdynaTraceVersion=$VERSION check plugin
 exit $?
