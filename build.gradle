@@ -6,7 +6,6 @@ apply plugin: 'jacoco'
 
 // Note: we could use the osgi-plugin of Gradle to do some of the things that we do manually here for now!
 
-//noinspection GroovyUnusedAssignment
 sourceCompatibility = 1.7
 
 // ----- PATH SETTINGS -----
@@ -67,14 +66,25 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-databind:2.6.3'*/
 
     compile fileTree(dir: "lib", include: [
-            'com.dynatrace.diagnostics.server.shared.jar',
+            'com.dynatrace.diagnostics.bootstrap.jar',
+            'com.dynatrace.diagnostics.report.excel.jar',
             'com.dynatrace.diagnostics.sdk.jar',
+            'com.dynatrace.diagnostics.server.shared.jar',
             'com.dynatrace.diagnostics.util.jar',
-            'com.dynatrace.diagnostics.report.excel.jar'
+	    
+	    // use the bundled jars for now, we can switch to proper Gradle dependencies in 
+	    // a future release
+	    'commons-*.jar',
+	    'jersey*.jar',
+	    'json*.jar',
+	    'xom*.jar',
+	    'ezmorph*.jar',
+	    'org.jdom*.jar',
+	    'jaxb*.jar'
     ])
 
     testCompile fileTree(dir: "lib", include: [
-            'org.eclipse.osgi_*.jar',
+            'org.eclipse.*.jar',
     ])
 
     testCompile 'junit:junit:4.+'
@@ -94,7 +104,6 @@ tasks.withType(JavaCompile) {
 }
 
 test {
-    //noinspection GroovyAssignabilityCheck
     systemProperties = System.properties
 
     systemProperty 'jsse.enableSNIExtension', 'false'
@@ -118,7 +127,6 @@ jacocoTestReport {
 
 
 eclipse {
-	//noinspection GroovyAssignabilityCheck
 	project {
 		buildCommand 'org.eclipse.pde.ManifestBuilder'
 		buildCommand 'org.eclipse.pde.SchemaBuilder'
@@ -151,6 +159,7 @@ task validateXml {
 			fileset(dir: project.projectDir) {
 				include(name: '**/*.xml')
 				exclude(name: '.ant-targets-build.xml')
+                exclude(name: 'build/**')
 			}
 		}
 	}
@@ -241,9 +250,7 @@ task plugin(dependsOn: jar) {
 	doLast {
 		ant.copy(todir: 'plugin/plugin', file:'build/libs/Dynatrace-JSON-Reporting-Plugin.jar', verbose:true)
 		ant.replaceregexp(file:'plugin/META-INF/MANIFEST.MF', match:'Bundle-Version: \\d+.\\d+.\\d+.\\d+', replace:'Bundle-Version: ' + dynaTraceVersion)
-		//noinspection GroovyAssignabilityCheck
 		ant.ant(antfile:'plugin/build.xml', inheritAll:'false') {
-			//noinspection GroovyAssignabilityCheck
 			property(name:'version',value:dynaTraceVersion)
 		}
 	}
