@@ -7,10 +7,7 @@
  */
 package com.dynatrace.diagnostics.report.json;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -47,7 +44,7 @@ import com.dynatrace.diagnostics.server.shared.reporting.exception.ReportRenderE
  * @author dominik.stadler
  */
 public class JSONFromXMLReportRenderer implements ReportRenderer {
-	protected Map<String, String> params;
+	private Map<String, String> params;
 
 	/**
 	 * For backwards-compatibility to < 6.5
@@ -64,18 +61,15 @@ public class JSONFromXMLReportRenderer implements ReportRenderer {
 			// first use the standard XML Reporter to create an XML file
 			String xml = reportToXMLFile(dashboard, dashboardConfig, userID, collection);
 
-			// use json-lib from http://json-lib.sourceforge.net/ to conver the XML
+			// use json-lib from http://json-lib.sourceforge.net/ to convert the XML
 			XMLSerializer serializer = new XMLSerializer();
 			JSON json = serializer.read(xml);
 
 			if(params != null && "true".equalsIgnoreCase(params.get("prettyprint"))) { //$NON-NLS-1$ //$NON-NLS-2$
 				FileUtils.writeStringToFile(outputFile, json.toString(4));
 			} else {
-				FileWriter writer = new FileWriter(outputFile);
-				try {
+				try (Writer writer = new FileWriter(outputFile)) {
 					json.write(writer);
-				} finally {
-					writer.close();
 				}
 			}
 		} catch (IOException e) {
@@ -83,30 +77,18 @@ public class JSONFromXMLReportRenderer implements ReportRenderer {
 		}
 	}
 
-	/**
-	 *
-	 * @param dashboard
-	 * @param dashboardConfig
-	 * @param userID
-	 * @param collection
-	 * @throws ReportRenderException
-	 * @author dominik.stadler
-	 * @return
-	 */
+
 	private String reportToXMLFile(DashboardInterface dashboard, DashboardConfig dashboardConfig, String userID, Collection<String> collection)
 			throws ReportRenderException {
-		Map<String, Object> headers = new HashMap<String, Object>();
+		Map<String, Object> headers = new HashMap<>();
 		headers.put("user", userID); //$NON-NLS-1$
 		XMLReportResult result = new XMLReportResult(dashboard, headers, dashboardConfig);
 		try {
-			ByteArrayOutputStream strmOut = new ByteArrayOutputStream();
-			try {
+			try (ByteArrayOutputStream strmOut = new ByteArrayOutputStream()) {
 				result.createXMLReport(strmOut, null, collection);
-			} finally {
-				strmOut.close();
-			}
 
-			return new String(strmOut.toByteArray());
+				return new String(strmOut.toByteArray());
+			}
 		} catch (IOException | XMLStreamException e) {
 			throw new ReportRenderException(e);
 		}

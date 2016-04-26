@@ -41,7 +41,7 @@ import com.sun.jersey.json.impl.writer.JsonXmlStreamWriter;
 public class JSONReportRenderer implements ReportRenderer {
 	private static final String PARAM_MODE = "mode";
 
-	protected Map<String, String> params;
+	private Map<String, String> params;
 
 	/**
 	 * For backwards-compatibility to < 6.5
@@ -69,7 +69,7 @@ public class JSONReportRenderer implements ReportRenderer {
 				writer = JsonXmlStreamWriter.createWriter(new OutputStreamWriter(new FileOutputStream(outputFile), "UTF-8"),
 						JSONConfiguration.mappedJettison().build());
 			} else {
-				throw new IllegalArgumentException("Unknown mode-flag: " + params.get(PARAM_MODE) +
+				throw new IllegalArgumentException("Unknown mode-flag: " + (params != null ? params.get(PARAM_MODE) : "<null>") +
 						", known modes are badgerfish, natural, mapped and mappedJettison");
 			}
 
@@ -78,7 +78,7 @@ public class JSONReportRenderer implements ReportRenderer {
 				// which we want to ignore here, e.g. writeComments()!
 				writer = (XMLStreamWriter) PreventUnsupportedOperationExceptionProxy.newInstance(writer);
 
-				Map<String, Object> headers = new HashMap<String, Object>();
+				Map<String, Object> headers = new HashMap<>();
 				headers.put("user", userID); //$NON-NLS-1$
 
 				// XMLStreamWriter writer = XMLSpreadSheetHelper.checkForIndentingWriterAvailable(xmlStreamWriter);
@@ -86,7 +86,7 @@ public class JSONReportRenderer implements ReportRenderer {
 				// unsupported: writer.writeStartDocument("utf-8", "1.0");
 				writer.writeStartDocument();
 
-				Map<String, Object> parameters = new HashMap<String, Object>(1);
+				Map<String, Object> parameters = new HashMap<>(1);
 
 			/*if(parameters == null) {
 				parameters = new HashMap<String, Object>(1);
@@ -100,6 +100,7 @@ public class JSONReportRenderer implements ReportRenderer {
 
 				writer.writeEndDocument();
 			} finally {
+				//noinspection ThrowFromFinallyBlock
 				writer.close();
 			}
 

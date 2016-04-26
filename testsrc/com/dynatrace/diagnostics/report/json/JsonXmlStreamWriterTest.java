@@ -7,14 +7,12 @@
  */
 package com.dynatrace.diagnostics.report.json;
 
-import java.io.StringWriter;
-
-import javax.xml.stream.XMLStreamWriter;
-
-import org.junit.Test;
-
 import com.sun.jersey.api.json.JSONConfiguration;
 import com.sun.jersey.json.impl.writer.JsonXmlStreamWriter;
+import org.junit.Test;
+
+import javax.xml.stream.XMLStreamWriter;
+import java.io.StringWriter;
 
 
 /**
@@ -29,7 +27,6 @@ public class JsonXmlStreamWriterTest {
 		XMLStreamWriter writer = JsonXmlStreamWriter.createWriter(stringWriter, JSONConfiguration.natural().build());
 
 		writer = (XMLStreamWriter)PreventUnsupportedOperationExceptionProxy.newInstance(writer);
-
 
 		try {
 			// XMLStreamWriter writer = XMLSpreadSheetHelper.checkForIndentingWriterAvailable(xmlStreamWriter);
@@ -48,6 +45,7 @@ public class JsonXmlStreamWriterTest {
 			}
 			writer.writeEndDocument();
 		} finally {
+			//noinspection ThrowFromFinallyBlock
 			writer.close();
 		}
 
