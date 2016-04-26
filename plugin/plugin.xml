@@ -8,7 +8,7 @@
             installer_type="resourcepack"
             name="com.dynatrace.diagnostics.report.json.plugin.metainfo">
          <resource
-               resource="plugin/com.dynatrace.diagnostics.report.json.plugin.jar"
+               resource="com.dynatrace.diagnostics.report.json.jar"
                resource_type="systemPlugin"> <!-- needs to be systemPlugin to install on client and server -->
          </resource>
       </metainfo>
