@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension
+    <extension
    		id="reportJSONFormats"
          point="com.dynatrace.diagnostics.report.format">
       
@@ -118,7 +118,7 @@
            </instance>
         </bundle>
          <min_required_product_version
-               major="3"
+               major="5"
                minor="5">
          </min_required_product_version>
      </metainfo>

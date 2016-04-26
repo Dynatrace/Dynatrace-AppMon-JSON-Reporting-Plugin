@@ -10,14 +10,7 @@ Require-Bundle: com.dynatrace.diagnostics.server.shared;bundle-version="3.5.0",
  com.dynatrace.diagnostics.report.velocity;bundle-version="3.5.0"
 Bundle-ActivationPolicy: lazy
 Implementation-Version: 5.5.0.1105
-Bundle-ClassPath: .,
- lib/json-lib-2.3-jdk15.jar,
- lib/xom-1.2.6.jar,
- lib/ezmorph-1.0.6.jar,
- lib/jersey-json-1.4.jar,
- lib/jaxb-impl-2.1.10.jar,
- lib/jersey-core-1.4.jar,
- lib/commons-collections-3.2.2.jar
+Bundle-ClassPath: .
 Built-By: dominik.stadler
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: com.dynatrace.diagnostics.report.json,

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JSON Plugin
 Bundle-SymbolicName: com.dynatrace.diagnostics.report.json.plugin;singleton:=true
-Bundle-Version: 5.5.0.1106
+Bundle-Version: 5.5.0.1107
 Bundle-Vendor: Dynatrace
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: com.dynatrace.diagnostics.sdk;bundle-version="3.5.0"

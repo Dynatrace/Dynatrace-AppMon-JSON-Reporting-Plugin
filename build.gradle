@@ -248,7 +248,7 @@ task plugin(dependsOn: jar) {
 	println "Building plugin with version " + dynaTraceVersion
 
 	doLast {
-		ant.copy(todir: 'plugin/plugin', file:'build/libs/Dynatrace-JSON-Reporting-Plugin.jar', verbose:true)
+		ant.copy(todir: 'plugin/plugin', file:'build/libs/com.dynatrace.diagnostics.report.json.plugin.jar', verbose:true)
 		ant.replaceregexp(file:'plugin/META-INF/MANIFEST.MF', match:'Bundle-Version: \\d+.\\d+.\\d+.\\d+', replace:'Bundle-Version: ' + dynaTraceVersion)
 		ant.ant(antfile:'plugin/build.xml', inheritAll:'false') {
 			property(name:'version',value:dynaTraceVersion)
