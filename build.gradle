@@ -75,6 +75,7 @@ dependencies {
 	    // use the bundled jars for now, we can switch to proper Gradle dependencies in 
 	    // a future release
 	    'commons-*.jar',
+        'guava-*.jar',
 	    'jersey*.jar',
 	    'json*.jar',
 	    'xom*.jar',

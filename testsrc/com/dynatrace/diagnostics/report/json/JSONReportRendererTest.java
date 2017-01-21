@@ -7,26 +7,7 @@
  */
 package com.dynatrace.diagnostics.report.json;
 
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import net.sf.json.JSON;
-import net.sf.json.xml.XMLSerializer;
-
-import org.junit.Test;
-
-import com.dynatrace.diagnostics.sdk.dashboard.AbstractSourceReference;
-import com.dynatrace.diagnostics.sdk.dashboard.DashboardConfig;
-import com.dynatrace.diagnostics.sdk.dashboard.DashboardInterface;
-import com.dynatrace.diagnostics.sdk.dashboard.DashboardLocation;
-import com.dynatrace.diagnostics.sdk.dashboard.PortletConfig;
-import com.dynatrace.diagnostics.sdk.dashboard.PortletInitializationException;
-import com.dynatrace.diagnostics.sdk.dashboard.PortletInterface;
-import com.dynatrace.diagnostics.sdk.dashboard.PortletTypeInterface;
+import com.dynatrace.diagnostics.sdk.dashboard.*;
 import com.dynatrace.diagnostics.sdk.dashboard.events.DashboardEventPostInterface;
 import com.dynatrace.diagnostics.sdk.dashboard.events.DashboardRequestEvent;
 import com.dynatrace.diagnostics.sdk.dashboard.events.PortletRequestEvent;
@@ -40,7 +21,14 @@ import com.dynatrace.diagnostics.sdk.resources.images.ImageReference;
 import com.dynatrace.diagnostics.sdk.security.Permission;
 import com.dynatrace.diagnostics.sdk.sessions.SessionReference;
 import com.dynatrace.diagnostics.sdk.ui.components.JobDescriptor;
-import com.dynatrace.diagnostics.server.shared.reporting.exception.ReportException;
+import net.sf.json.JSON;
+import net.sf.json.xml.XMLSerializer;
+import org.junit.Test;
+
+import java.io.File;
+import java.util.*;
+
+import static org.junit.Assert.assertTrue;
 
 
 /**
@@ -49,18 +37,27 @@ import com.dynatrace.diagnostics.server.shared.reporting.exception.ReportExcepti
  */
 public class JSONReportRendererTest {
 
-	/**
-	 * Test method for {@link com.dynatrace.diagnostics.report.json.JSONFromXMLReportRenderer#reportDashboard(com.dynatrace.diagnostics.sdk.dashboard.DashboardInterface, com.dynatrace.diagnostics.sdk.dashboard.DashboardConfig, java.lang.String, java.io.File, com.dynatrace.diagnostics.sdk.dashboard.reporting.ReportType)}.
-	 * @throws Exception
-	 * @throws ReportException
-	 */
 	@Test
 	public void testReportDashboard() throws Exception {
 		JSONFromXMLReportRenderer renderer = new JSONFromXMLReportRenderer();
 
 		DashboardConfig config = new DashboardConfig();
 		File file = File.createTempFile("test", ".json");
-		renderer.reportDashboard(new LocalDashboard(), config, "user", file, ReportType.registerType("JSON"));
+		renderer.reportDashboard(new LocalDashboard(), config, "user", file,
+				ReportType.registerType("JSON"), Collections.<String>emptySet());
+
+		assertTrue(file.exists());
+		assertTrue(file.delete());
+	}
+
+	@Test
+	public void testReportDashboardCompatible() throws Exception {
+		JSONFromXMLReportRenderer renderer = new JSONFromXMLReportRenderer();
+
+		DashboardConfig config = new DashboardConfig();
+		File file = File.createTempFile("test", ".json");
+		renderer.reportDashboard(new LocalDashboard(), config, "user", file,
+				ReportType.registerType("JSON"));
 
 		assertTrue(file.exists());
 		assertTrue(file.delete());

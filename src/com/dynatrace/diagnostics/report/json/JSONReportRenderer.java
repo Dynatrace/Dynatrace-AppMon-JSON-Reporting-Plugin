@@ -11,6 +11,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,12 +43,17 @@ public class JSONReportRenderer implements ReportRenderer {
 
 	protected Map<String, String> params;
 
-	/* (non-Javadoc)
-	 * @see com.dynatrace.diagnostics.server.shared.reporting.ReportRenderer#reportDashboard(com.dynatrace.diagnostics.sdk.dashboard.DashboardInterface, com.dynatrace.diagnostics.sdk.dashboard.DashboardConfig, java.lang.String, java.io.File, com.dynatrace.diagnostics.sdk.dashboard.reporting.ReportType)
+	/**
+	 * For backwards-compatibility to < 6.5
 	 */
+	public void reportDashboard(DashboardInterface dashboard, DashboardConfig dashboardConfig, String userID, File outputFile,
+								ReportType reportType) throws ReportException {
+		reportDashboard(dashboard, dashboardConfig, userID, outputFile, reportType, Collections.<String>emptySet());
+	}
+
 	@Override
 	public void reportDashboard(DashboardInterface dashboard, DashboardConfig dashboardConfig, String userID, File outputFile,
-			ReportType reportType) throws ReportException {
+								ReportType reportType, Collection<String> collection) throws ReportException {
 		try {
 			XMLStreamWriter writer;
 			if (params != null && "badgerfish".equalsIgnoreCase(params.get(PARAM_MODE))) { //$NON-NLS-1$ //$NON-NLS-2$
@@ -89,16 +96,14 @@ public class JSONReportRenderer implements ReportRenderer {
 				parameters.put(PARAMETER_SELECT_PUREPATH, selectedPurePath);
 			}*/
 
-				DashboardXMLReportPartFactory.createDashboardReport(writer, dashboard, dashboardConfig, headers, parameters);
+				DashboardXMLReportPartFactory.createDashboardReport(writer, dashboard, dashboardConfig, headers, parameters, collection);
 
 				writer.writeEndDocument();
 			} finally {
 				writer.close();
 			}
 
-		} catch (IOException e) {
-			throw new ReportRenderException(e);
-		} catch (XMLStreamException e) {
+		} catch (IOException | XMLStreamException e) {
 			throw new ReportRenderException(e);
 		}
 	}

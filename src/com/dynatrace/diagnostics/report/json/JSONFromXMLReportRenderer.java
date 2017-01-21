@@ -11,6 +11,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,15 +49,20 @@ import com.dynatrace.diagnostics.server.shared.reporting.exception.ReportRenderE
 public class JSONFromXMLReportRenderer implements ReportRenderer {
 	protected Map<String, String> params;
 
-	/* (non-Javadoc)
-	 * @see com.dynatrace.diagnostics.server.shared.reporting.ReportRenderer#reportDashboard(com.dynatrace.diagnostics.sdk.dashboard.DashboardInterface, com.dynatrace.diagnostics.sdk.dashboard.DashboardConfig, java.lang.String, java.io.File, com.dynatrace.diagnostics.sdk.dashboard.reporting.ReportType)
+	/**
+	 * For backwards-compatibility to < 6.5
 	 */
+	public void reportDashboard(DashboardInterface dashboard, DashboardConfig dashboardConfig, String userID, File outputFile,
+								ReportType reportType) throws ReportException {
+		reportDashboard(dashboard, dashboardConfig, userID, outputFile, reportType, Collections.<String>emptySet());
+	}
+
 	@Override
 	public void reportDashboard(DashboardInterface dashboard, DashboardConfig dashboardConfig, String userID, File outputFile,
-			ReportType reportType) throws ReportException {
+								ReportType reportType, Collection<String> collection) throws ReportException {
 		try {
 			// first use the standard XML Reporter to create an XML file
-			String xml = reportToXMLFile(dashboard, dashboardConfig, userID);
+			String xml = reportToXMLFile(dashboard, dashboardConfig, userID, collection);
 
 			// use json-lib from http://json-lib.sourceforge.net/ to conver the XML
 			XMLSerializer serializer = new XMLSerializer();
@@ -81,11 +88,12 @@ public class JSONFromXMLReportRenderer implements ReportRenderer {
 	 * @param dashboard
 	 * @param dashboardConfig
 	 * @param userID
+	 * @param collection
 	 * @throws ReportRenderException
 	 * @author dominik.stadler
 	 * @return
 	 */
-	private String reportToXMLFile(DashboardInterface dashboard, DashboardConfig dashboardConfig, String userID)
+	private String reportToXMLFile(DashboardInterface dashboard, DashboardConfig dashboardConfig, String userID, Collection<String> collection)
 			throws ReportRenderException {
 		Map<String, Object> headers = new HashMap<String, Object>();
 		headers.put("user", userID); //$NON-NLS-1$
@@ -93,15 +101,13 @@ public class JSONFromXMLReportRenderer implements ReportRenderer {
 		try {
 			ByteArrayOutputStream strmOut = new ByteArrayOutputStream();
 			try {
-				result.createXMLReport(strmOut, null);
+				result.createXMLReport(strmOut, null, collection);
 			} finally {
 				strmOut.close();
 			}
 
 			return new String(strmOut.toByteArray());
-		} catch (IOException e) {
-			throw new ReportRenderException(e);
-		} catch (XMLStreamException e) {
+		} catch (IOException | XMLStreamException e) {
 			throw new ReportRenderException(e);
 		}
 	}
