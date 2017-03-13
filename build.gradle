@@ -117,7 +117,7 @@ test {
 }
 
 jacoco {
-    toolVersion = '0.7.6.201602180812'
+    toolVersion = '0.7.8'
 }
 
 jacocoTestReport {
@@ -224,7 +224,7 @@ jar {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.12'
+    gradleVersion = '3.4.1'
 }
 
 configurations {
